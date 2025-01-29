@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ransomware Detection</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #b773f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #9b36f9;
+        }
+
+        #result {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+        }
+
+        td {
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #f50d24;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #0cb934;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ransomware Detection</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="file-upload">Upload your file for detection:</label><br>
+            <input type= "file" id="file" name="file" accept=".exe,.dll" onchange="uploadFile()"><br>
+            <button class="d-grid gap-2 col-6 mx-auto" type="submit">Detect and Analyze</button>
+        </form>
+        
+        <div id="results">
+            {% if result %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Characteristic</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Machine</td>
+                        <td>{{ result.machine }}</td>
+                    </tr>
+                    <tr>
+                        <td>Debug Size</td>
+                        <td>{{ result.DebugSize }}</td>
+                    </tr>
+                    <tr>
+                        <td>Debug RVA</td>
+                        <td>{{ result.DebugRVA }}</td>
+                    </tr>
+                    <tr>
+                        <td>Major Image Version</td>
+                        <td>{{ result.major_image_version }}</td>
+                    </tr>
+                    <tr>
+                        <td>Major OS Version</td>
+                        <td>{{ result.major_os_version }}</td>
+                    </tr>
+                    <tr>
+                        <td>Export RVA</td>
+                        <td>{{ result.ExportRVA }}</td>
+                    </tr>
+                    <tr>
+                        <td>Export Size</td>
+                        <td>{{ result.ExportSize }}</td>
+                    </tr>
+                    <tr>
+                        <td>IAT RVA</td>
+                        <td>{{ result.IatVRA }}</td>
+                    </tr>
+                    <tr>
+                        <td>Major Linker Version</td>
+                        <td>{{ result.major_linker_version }}</td>
+                    </tr>
+                    <tr>
+                        <td>Minor Linker Version</td>
+                        <td>{{ result.minor_linker_version }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Sections</td>
+                        <td>{{ result.number_of_sections }}</td>
+                    </tr>
+                    <tr>
+                        <td>Size of Stack Reserve</td>
+                        <td>{{ result.size_of_stack_reserve }}</td>
+                    </tr>
+                    <tr>
+                        <td>Dll Characteristics</td>
+                        <td>{{ result.dll_characteristics }}</td>
+                    </tr>
+                    <tr>
+                        <td>Resource Size</td>
+                        <td>{{ result.ResourceSize }}</td>
+                    </tr>
+                    <tr>
+                        <td>Bitcoin Addresses</td>
+                        <td>{{ result.BitcoinAddresses }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="result" class="alert {% if result.is_ransomware == 'Ransomware' %}alert-danger{% else %}alert-success{% endif %}">
+                {% if result.is_ransomware %}
+                    <strong>Hasil Analisis:</strong> File ini terdeteksi sebagai <b>{{ result.is_ransomware }}</b>.
+                {% else %}
+                    <strong>Hasil Analisis:</strong> Tidak ada hasil analisis.
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
